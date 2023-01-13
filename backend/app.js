@@ -1,17 +1,19 @@
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
+const cors = require('cors');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const bodyParser = require('body-parser');
 const { errors } = require('celebrate');
 const router = require('./routes');
 const auth = require('./middlewares/auth');
+
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const corsErr = require('./middlewares/corsErr');
 
 const app = express();
-
+app.use(cors());
 app.use(bodyParser.json());
 const { validationCreateUser, validationLogin } = require('./middlewares/validation');
 
