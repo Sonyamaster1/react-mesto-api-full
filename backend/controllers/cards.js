@@ -6,6 +6,7 @@ const BadRequest = require('../errors/BadRequest'); // 400
 module.exports.getCards = (req, res, next) => {
   cardSchema
     .find({})
+    .populate(['likes', 'owner'])
     .then((cards) => res.status(200).send(cards))
     .catch(next);
 };
@@ -28,6 +29,7 @@ module.exports.createCards = (req, res, next) => {
 module.exports.deleteCard = (req, res, next) => {
   const { cardId } = req.params;
   return cardSchema.findById(cardId)
+    .populate(['likes', 'owner'])
     .then((card) => {
       if (!card) {
         throw new NotFound('Пользователь не найден');
@@ -35,7 +37,7 @@ module.exports.deleteCard = (req, res, next) => {
       if (!card.owner.equals(req.user._id)) {
         return next(new CurrentErr('Вы не можете удалить чужую карточку'));
       }
-      return card.remove().then(() => res.send({ message: 'Карточка успешно удалена' }));
+      return card.remove().then(() => res.send({ message: 'Карточка успешно удалена' }, card));
     })
     .catch(next);
 };
@@ -47,11 +49,12 @@ module.exports.getLikes = (req, res, next) => {
       { $addToSet: { likes: req.user._id } },
       { new: true },
     )
+    .populate(['likes', 'owner'])
     .then((card) => {
       if (!card) {
         throw new NotFound('Пользователь не найден');
       }
-      res.send({ data: card });
+      res.send(card);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
@@ -68,11 +71,12 @@ module.exports.deleteLikes = (req, res, next) => {
       { $pull: { likes: req.user._id } },
       { new: true },
     )
+    .populate(['likes', 'owner'])
     .then((card) => {
       if (!card) {
         throw new NotFound('Пользователь не найден');
       }
-      res.send({ data: card });
+      res.send(card);
     })
     .catch((err) => {
       if (err.name === 'CastError') {

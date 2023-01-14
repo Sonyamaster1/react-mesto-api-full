@@ -26,7 +26,7 @@ function App() {
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] =
     React.useState(false);
   // попап удаления
-  const [isDeletePopupOpen, setIsDeletePopupOpen] = React.useState(false);
+  const [isDeletePopupOpen] = React.useState(false);
   // попап карточки
   const [selectedCard, setSelectedCard] = React.useState(null);
   // попап успешного входа
@@ -76,16 +76,20 @@ function App() {
 
   // получаем массив карточек и инфу пользователя
   React.useEffect(() => {
+    const jwt = localStorage.getItem("jwt");
+    if (jwt) {
     Promise.all([api.getInfo(), api.getInitialCards()])
       .then(([user, cards]) => {
         setCurrentUser(user);
         setCards(cards);
       })
       .catch((err) => console.log(err));
-  }, []);
+    }
+  }, [isLoggedIn]);
+
   // like
   function handleCardLike(card) {
-    const isLiked = card.likes.some((i) => i._id === currentUser._id);
+    const isLiked = card.likes.some((id) => id === currentUser._id);
     if (!isLiked) {
       api
         .getLike(card._id, !isLiked)
@@ -222,7 +226,7 @@ function App() {
         .then((data) => {
           if (data) {
             setIsLoggedIn(true); // войдено
-            setHeaderEmail(data.data.email); // получаем почту
+            setHeaderEmail(data.email); // получаем почту
             history.push("/"); // перебрасываем в профиль
           }
         })

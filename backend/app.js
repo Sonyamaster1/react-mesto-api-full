@@ -8,16 +8,17 @@ const bodyParser = require('body-parser');
 const { errors } = require('celebrate');
 const router = require('./routes');
 const auth = require('./middlewares/auth');
+const { MONGO_URL } = require('./config');
 
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const corsErr = require('./middlewares/corsErr');
 
+const { PORT = 3000 } = process.env;
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 const { validationCreateUser, validationLogin } = require('./middlewares/validation');
 
-const { PORT = 3000, MONGO_URL = 'mongodb://localhost:27017/mestodb' } = process.env;
 const { createUsers, login } = require('./controllers/auth');
 
 const limiter = rateLimit({
@@ -30,6 +31,11 @@ app.use(requestLogger); // request
 app.post('/signin', validationLogin, login);
 app.post('/signup', validationCreateUser, createUsers);
 app.use(auth);
+app.get('/crash-test', () => {
+  setTimeout(() => {
+    throw new Error('Сервер сейчас упадёт');
+  }, 0);
+});
 app.use(router);
 app.use(helmet());
 app.use(limiter);
@@ -39,7 +45,7 @@ app.use(errorLogger); // errors
 async function connect() {
   try {
     await mongoose.set('strictQuery', false);
-    await mongoose.connect('mongodb://localhost:27017/mestodb');
+    await mongoose.connect(MONGO_URL);
     console.log(`App connected ${MONGO_URL}`);
     await app.listen(PORT);
     console.log(`App listening on port ${PORT}`);

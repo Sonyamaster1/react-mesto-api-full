@@ -37,10 +37,11 @@ class AuthApi {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        'Authorization': `Bearer ${token}`,
       },
     }).then((res) => this._checkError(res));
   }
 }
-const authApi = new AuthApi("https://auth.nomoreparties.co");
+const authApi = new AuthApi("http://localhost:3000");
 export default authApi;
+// https://api.back.nomoredomains.club

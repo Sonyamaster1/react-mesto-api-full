@@ -2,7 +2,7 @@ import React from "react";
 import pen from "../images/Vectoredit.svg";
 import addBtn from "../images/Vector.svg";
 import Card from "./Card.js";
-import api from "../utils/Api";
+// import api from "../utils/Api";
 import { CurrentUserContext } from "../context/CurrentUserContext.js";
 
 function Main(props) {
