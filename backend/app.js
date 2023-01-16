@@ -43,7 +43,9 @@ app.use(corsErr); // cors
 async function connect() {
   try {
     await mongoose.set('strictQuery', false);
-    await mongoose.connect(MONGO_URL);
+    await mongoose.connect(MONGO_URL, {
+      useNewUrlParser: true,
+    });
     console.log(`App connected ${MONGO_URL}`);
     await app.listen(PORT);
     console.log(`App listening on port ${PORT}`);

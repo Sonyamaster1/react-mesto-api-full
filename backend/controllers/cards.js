@@ -31,10 +31,9 @@ module.exports.deleteCard = (req, res, next) => {
   const { cardId } = req.params;
   return cardSchema.findById(cardId)
     .populate(['likes', 'owner'])
-    .then((card, err) => {
+    .then((card) => {
       if (!card) {
-        // throw new NotFound('Пользователь не найден');
-        res.send(err.message);
+        throw new NotFound('Пользователь не найден');
       }
       if (!card.owner.equals(req.user._id)) {
         return next(new CurrentErr('Вы не можете удалить чужую карточку'));
