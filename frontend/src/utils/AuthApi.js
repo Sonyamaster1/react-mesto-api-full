@@ -42,6 +42,6 @@ class AuthApi {
     }).then((res) => this._checkError(res));
   }
 }
-const authApi = new AuthApi("http://localhost:3000");
+const authApi = new AuthApi("https://api.back.nomoredomains.club");
 export default authApi;
 // https://api.back.nomoredomains.club

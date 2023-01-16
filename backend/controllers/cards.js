@@ -6,7 +6,7 @@ const BadRequest = require('../errors/BadRequest'); // 400
 module.exports.getCards = (req, res, next) => {
   cardSchema
     .find({})
-    .populate(['likes', 'owner'])
+    .populate(['owner', 'likes'])
     .then((cards) => res.status(200).send(cards))
     .catch(next);
 };
@@ -30,9 +30,10 @@ module.exports.deleteCard = (req, res, next) => {
   const { cardId } = req.params;
   return cardSchema.findById(cardId)
     .populate(['likes', 'owner'])
-    .then((card) => {
+    .then((card, err) => {
       if (!card) {
-        throw new NotFound('Пользователь не найден');
+        // throw new NotFound('Пользователь не найден');
+        res.send(err.message);
       }
       if (!card.owner.equals(req.user._id)) {
         return next(new CurrentErr('Вы не можете удалить чужую карточку'));

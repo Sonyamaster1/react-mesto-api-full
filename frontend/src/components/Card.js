@@ -6,12 +6,14 @@ import { CurrentUserContext } from "../context/CurrentUserContext.js";
 function Card(card) {
   const currentUser = React.useContext(CurrentUserContext);
   // мусорка
-  const isOwn = card.owner === currentUser._id;
+  //const isOwn = card.owner === currentUser._id; мой
+  const isOwn = currentUser._id === card.owner._id;
   const cardDeleteButtonClassName = `element__button-trash ${
     isOwn ? "element__button-trash_type_active" : ""
   }`;
   // лайк
-  const isLiked = card.likes.some(id => id === currentUser._id);
+  // const isLiked = card.likes.some(id => id === currentUser._id); мой
+  const isLiked = card.likes.some(i => i._id === currentUser._id);
   const cardLikeButtonClassName = `element__like ${
     isLiked ? "element__like_active" : ""
   }`;

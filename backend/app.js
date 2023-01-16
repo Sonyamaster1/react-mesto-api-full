@@ -11,7 +11,6 @@ const auth = require('./middlewares/auth');
 const { MONGO_URL } = require('./config');
 
 const { requestLogger, errorLogger } = require('./middlewares/logger');
-const corsErr = require('./middlewares/corsErr');
 
 const { PORT = 3000 } = process.env;
 const app = express();
@@ -39,7 +38,6 @@ app.get('/crash-test', () => {
 app.use(router);
 app.use(helmet());
 app.use(limiter);
-app.use(corsErr); // cors
 app.use(errorLogger); // errors
 
 async function connect() {
@@ -55,12 +53,13 @@ async function connect() {
 }
 app.use(errors());
 app.use((err, req, res, next) => {
-  const { statusCode = 500, message } = err;
-  res.status(statusCode).send({
+  // const { statusCode = 500, message } = err;
+  res.send(err.status.message.name);
+  /* res.status(statusCode).send({
     message: statusCode === 500
       ? 'На сервере произошла ошибка'
       : message,
-  });
+  }); */
   next();
 });
 // подключаем роуты
