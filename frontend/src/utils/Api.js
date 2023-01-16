@@ -104,7 +104,7 @@ class Api {
   }
 }
 const api = new Api({
-  //url: "http://localhost:3000",
-  url: 'https://api.back.nomoredomains.club'
+   // url: "http://localhost:3000",
+   url: "https://api.back.nomoredomains.club"
 });
 export default api;

@@ -45,3 +45,4 @@ class AuthApi {
 const authApi = new AuthApi("https://api.back.nomoredomains.club");
 export default authApi;
 // https://api.back.nomoredomains.club
+// http://localhost:3000

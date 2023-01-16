@@ -9,7 +9,7 @@ const { errors } = require('celebrate');
 const router = require('./routes');
 const auth = require('./middlewares/auth');
 const { MONGO_URL } = require('./config');
-
+const corsErr = require('./middlewares/corsErr');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 
 const { PORT = 3000 } = process.env;
@@ -39,7 +39,7 @@ app.use(router);
 app.use(helmet());
 app.use(limiter);
 app.use(errorLogger); // errors
-
+app.use(corsErr); // cors
 async function connect() {
   try {
     await mongoose.set('strictQuery', false);
@@ -53,13 +53,12 @@ async function connect() {
 }
 app.use(errors());
 app.use((err, req, res, next) => {
-  // const { statusCode = 500, message } = err;
-  res.send(err.status.message.name);
-  /* res.status(statusCode).send({
+  const { statusCode = 500, message } = err;
+  res.status(statusCode).send({
     message: statusCode === 500
       ? 'На сервере произошла ошибка'
       : message,
-  }); */
+  });
   next();
 });
 // подключаем роуты

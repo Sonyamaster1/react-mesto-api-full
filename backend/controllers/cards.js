@@ -16,7 +16,8 @@ module.exports.createCards = (req, res, next) => {
   const owner = req.user._id;
   cardSchema
     .create({ name, link, owner })
-    .then((card) => res.status(201).send(card))
+    .then((card) => cardSchema.populate(card, ['likes', 'owner'])
+      .then((populatedCard) => res.status(200).send(populatedCard)))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new BadRequest('Переданы некорректные данные при создании карточки'));
@@ -38,7 +39,7 @@ module.exports.deleteCard = (req, res, next) => {
       if (!card.owner.equals(req.user._id)) {
         return next(new CurrentErr('Вы не можете удалить чужую карточку'));
       }
-      return card.remove().then(() => res.send({ message: 'Карточка успешно удалена' }, card));
+      return card.remove().then(() => res.send({ message: 'Карточка успешно удалена' }));
     })
     .catch(next);
 };
